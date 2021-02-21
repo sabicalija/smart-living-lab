@@ -37,7 +37,13 @@ Das Labor steht außerdem Partnern zur Verfügung, um sich über aktuelle Standa
 
 ## Virtueller Rundgang
 
-<!-- <VRTour/> -->
+<VRTour>
+  <VRImage title="Gang" src="/assets/img/vr/floor.jpg"/>
+  <VRImage title="Küche" src="/assets/img/vr/kitchen.jpg"/>
+  <VRImage title="Wohnraum" src="/assets/img/vr/living-room.jpg"/>
+  <VRImage title="Patientenbett" src="/assets/img/vr/patient-bed.jpg"/>
+  <VRImage title="Smart Garden" src="/assets/img/vr/smart-garden.jpg"/>
+</VRTour>
 
 ## Standards
 
