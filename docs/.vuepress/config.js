@@ -1,5 +1,7 @@
+const base = require("./config/base.js");
+
 module.exports = {
-  base: "/smart-living-lab/",
+  base,
   dest: "build",
   themeConfig: {
     displayAllHeaders: true,
