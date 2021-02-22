@@ -1,28 +1,17 @@
 <template>
-  <div ref="root">
-    <span>
-      {{ title }} (x: {{ position.x.toFixed(0) }}, y:
-      {{ position.y.toFixed(0) }}, z: {{ position.z.toFixed(0) }}, fov:
-      {{ fov }})
-    </span>
-    <img :src="source" alt="Picture" />
-    <div ref="container" class="container"></div>
-  </div>
+  <div ref="container" class="container"></div>
 </template>
 
 <script>
 import {
-  Scene,
   PerspectiveCamera,
   Vector3,
-  VRControls,
-  WebGLRenderer,
-  // ImageUtils,
-  TextureLoader,
-  UVMapping,
-  Mesh,
+  Scene,
   SphereGeometry,
+  Mesh,
   MeshBasicMaterial,
+  TextureLoader,
+  WebGLRenderer,
   Math as TMath,
 } from "three";
 
@@ -40,33 +29,24 @@ export default {
   },
   data() {
     return {
-      scene: null,
       camera: null,
-      mesh: null,
-      isUserInteracting: false,
-      // controls: null,
-      // effect: null,
-      renderer: null,
       texture: null,
-      fov: 70, // Field of View
-      ratio: 0,
-      lon: 0,
-      lat: 0,
-      // Pointer
-      onPointerDownPointerX: 0,
-      onPointerDownPointerY: 0,
-      onPointerDownLon: 0,
-      onPointerDownLat: 0,
-      // Mouse
-      onMouseDownMouseX: 0,
-      onMouseDownMouseY: 0,
-      onMouseDownLon: 0,
-      onMouseDownLat: 0,
-      position: {
+      scene: null,
+      renderer: null,
+      isUserInteracting: false,
+      down: {
         x: 0,
         y: 0,
-        z: 0,
+        lon: 0,
+        lat: 0,
       },
+      lon: 0,
+      lat: 0,
+      phi: 0,
+      theta: 0,
+      width: 0,
+      height: 0,
+      ratio: 0,
     };
   },
   computed: {
@@ -75,146 +55,99 @@ export default {
     },
   },
   methods: {
-    onWindowResized(event) {
-      this.renderer.setSize(this.width, this.height);
-      this.camera.updateProjectionMatrix();
-    },
-    onDocumentMouseDown(event) {
-      event.preventDefault();
-
-      this.onPointerDownPointerX = event.clientX;
-      this.onPointerDownPointerY = event.clientY;
-
-      this.onPointerDownLon = this.lon;
-      this.onPointerDownLat = this.lat;
-
-      this.isUserInteracting = true;
-      this.$refs.container.addEventListener(
-        "mousemove",
-        this.onDocumentMouseMove,
-        false
-      );
-      this.$refs.container.addEventListener(
-        "mouseup",
-        this.onDocumentMouseUp,
-        false
-      );
-    },
-    onDocumentMouseMove(event) {
-      this.lon =
-        (event.clientX - this.onPointerDownPointerX) * 0.175 +
-        this.onPointerDownLon;
-      this.lat =
-        (event.clientY - this.onPointerDownPointerY) * -0.175 +
-        this.onPointerDownLat;
-    },
-    onDocumentMouseUp(event) {
-      this.isUserInteracting = false;
-      this.$refs.container.removeEventListener(
-        "mousemove",
-        this.onDocumentMouseMove,
-        false
-      );
-      this.$refs.container.removeEventListener(
-        "mouseup",
-        this.onDocumentMouseUp,
-        false
-      );
-    },
-    onDocumentMouseWheel(event) {
-      event.preventDefault();
-      // WebKit
-      if (event.wheelDeltaY) {
-        this.fov -= event.wheelDeltaY * 0.05;
-      } else if (event.wheelDelta) {
-        // Opera / Explorer 9
-        this.fov -= event.wheelDelta * 0.05;
-      } else if (event.detail) {
-        // Firefox
-        this.fov += event.detail * 1.0;
-      }
-      if (this.fov < 45 || this.fov > 90) {
-        this.fov = this.fov < 45 ? 45 : 90;
-      }
-      this.camera.fov = this.fov;
-      this.camera.updateProjectionMatrix();
-      // this.camera.projectionMatrix.makePerspective(
-      //   this.fov,
-      //   this.ratio,
-      //   1,
-      //   1100
-      // );
-    },
     init() {
-      this.ratio = this.width / this.height;
-      this.camera = new PerspectiveCamera(this.fov, this.ratio, 1, 1000);
+      this.camera = new PerspectiveCamera(75, this.ratio, 1, 1100);
+      this.camera.target = new Vector3(0, 0, 0);
 
       this.scene = new Scene();
-      this.mesh = new Mesh(
-        new SphereGeometry(500, 60, 40),
-        new MeshBasicMaterial({ map: this.texture })
-      );
-      this.mesh.scale.x = -1;
-      this.scene.add(this.mesh);
 
-      this.renderer = new WebGLRenderer({
-        antialias: true,
-        // logarithmicDepthBuffer: true,
+      const geometry = new SphereGeometry(500, 60, 40);
+      geometry.scale(-1, 1, 1);
+
+      // const material = new MeshBasicMaterial({
+      //   map: new TextureLoader().load(this.source),
+      // });
+
+      const material = new MeshBasicMaterial({
+        map: this.texture,
       });
+
+      const mesh = new Mesh(geometry, material);
+
+      this.scene.add(mesh);
+
+      this.renderer = new WebGLRenderer();
+      this.renderer.setPixelRatio(window.devicePixelRatio);
       this.renderer.setSize(this.width, this.height);
       this.$refs.container.appendChild(this.renderer.domElement);
 
       this.$refs.container.addEventListener(
         "mousedown",
-        this.onDocumentMouseDown,
+        this.onMouseDown,
         false
       );
       this.$refs.container.addEventListener(
-        "mousewheel",
-        this.onDocumentMouseWheel,
+        "mousemove",
+        this.onMouseMove,
         false
       );
-      this.$refs.container.addEventListener(
-        "DOMMouseScroll",
-        this.onDocumentMouseWheel,
-        false
-      );
-      window.addEventListener("resize", this.onWindowResized, false);
-      this.onWindowResized(null);
+      this.$refs.container.addEventListener("mouseup", this.onMouseUp, false);
+      this.$refs.container.addEventListener("wheel", this.onMouseWheel, false);
+
+      // this.$refs.container.addEventListener("dragover", onDragOver, false);
+      // this.$refs.container.addEventListener("dragenter", onDragEnter, false);
+      // this.$refs.container.addEventListener("dragleave", onDragLeave, false);
+      // this.$refs.container.addEventListener("drop", onDrop, false);
+    },
+    onWindowResize() {},
+    onMouseDown(event) {
+      event.preventDefault();
+      this.isUserInteracting = true;
+      this.down.x = event.clientX;
+      this.down.y = event.clientY;
+      this.down.lon = this.lon;
+      this.down.lat = this.lat;
+    },
+    onMouseMove(event) {
+      if (this.isUserInteracting === true) {
+        this.lon = (this.down.x - event.clientX) * 0.1 + this.down.lon;
+        this.lat = (event.clientY - this.down.y) * 0.1 + this.down.lat;
+      }
+    },
+    onMouseUp(event) {
+      this.isUserInteracting = false;
+    },
+    onMouseWheel(event) {
+      this.camera.fov += event.deltaY * 0.05;
+      this.camera.updateProjectionMatrix();
     },
     animate() {
-      window.requestAnimationFrame(this.animate);
-      this.render();
+      this.$nextTick(this.animate);
+      this.updateCamera();
     },
-    render() {
-      if (!this.isUserInteracting) this.lon += 0.05;
+    updateCamera() {
+      if (this.isUserInteracting === false) this.lon += 0.1;
       this.lat = Math.max(-85, Math.min(85, this.lat));
+      this.phi = TMath.degToRad(90 - this.lat);
+      this.theta = TMath.degToRad(this.lon);
 
-      const phi = TMath.degToRad(this.lat + 90);
-      const theta = TMath.degToRad(this.lon);
+      this.camera.target.x = 500 * Math.sin(this.phi) * Math.cos(this.theta);
+      this.camera.target.y = 500 * Math.cos(this.phi);
+      this.camera.target.z = 500 * Math.sin(this.phi) * Math.sin(this.theta);
 
-      this.camera.position.x = 1000 * Math.sin(phi) * Math.cos(theta);
-      this.camera.position.y = 1000 * Math.cos(phi);
-      this.camera.position.z = 1000 * Math.sin(phi) * Math.sin(theta);
-
-      // this.camera.position.x = 0;
-      // this.camera.position.y = 0;
-      // this.camera.position.z = 0;
-
-      this.position.x = this.camera.position.x;
-      this.position.y = this.camera.position.y;
-      this.position.z = this.camera.position.z;
-
-      this.camera.lookAt(this.scene.position);
-      // this.camera.target = new Vector3(100, 100, 100);
-      // this.camera.lookAt(this.camera.target);
+      this.camera.lookAt(this.camera.target);
       this.renderer.render(this.scene, this.camera);
     },
   },
   async mounted() {
-    const { width } = this.$refs.root.parentNode.getBoundingClientRect();
+    const { width } = this.$refs.container.parentNode.getBoundingClientRect();
     this.width = width;
-    this.height = (width / 16) * 9;
+    this.height = (width * 9) / 16;
+    this.ratio = this.width / this.height;
+
+    // this.init();
+    // this.animate();
+
     try {
       this.texture = await new TextureLoader().load(this.source);
       this.init();
@@ -228,12 +161,5 @@ export default {
 
 <style lang="stylus" scoped>
 .container
-  cursor move // fallback
-  cursor grab
-  cursor -moz-grab
-  cursor -webkit-grab
-  &:active
-    cursor grabbing
-    cursor -moz-grabbing
-    cursor -webkit grabbing
+  margin 1rem 0
 </style>
