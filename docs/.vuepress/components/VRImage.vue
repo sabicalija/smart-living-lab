@@ -20,6 +20,9 @@ import {
   TextureLoader,
   WebGLRenderer,
   LinearEncoding,
+  Raycaster,
+  Vector2,
+  Vector3,
 } from "three";
 
 import { VRButton } from "three/examples/jsm/webxr/VRButton.js";
@@ -44,7 +47,10 @@ export default {
       camera: null,
       scene: null,
       renderer: null,
-      isUserIntefacing: null,
+      raycaster: null,
+      mouse: null,
+      intersects: null,
+      isUserIntefacing: false,
       down: {
         x: 0,
         y: 0,
@@ -64,12 +70,13 @@ export default {
     init() {
       const ratio = this.width / this.height;
       this.camera = new PerspectiveCamera(this.fov, ratio, 1, 1100);
+      this.lon = 15;
       this.scene = new Scene();
 
       const texture = new TextureLoader().load(this.source);
       texture.mapping = EquirectangularReflectionMapping;
       // texture.encoding = sRGBEncoding;
-      texture.encoding = LinearEncoding;
+      // texture.encoding = LinearEncoding;
       this.scene.background = texture;
 
       // const geometry = new SphereGeometry(500, 60, 40);
@@ -79,6 +86,17 @@ export default {
       // const mesh = new Mesh(geometry, material);
       // this.scene.add(mesh);
 
+      const locationGeometry = new SphereGeometry(1, 60, 40);
+      const locationTexture = new TextureLoader().load("/assets/img/vr/kitchen.jpg");
+      const locationMaterial = new MeshBasicMaterial({ map: locationTexture, transparent: true, opacity: 0.5 });
+      const locationMesh = new Mesh(locationGeometry, locationMaterial);
+      locationMesh.position.z = 2;
+      locationMesh.position.x = 20;
+      locationMesh.position.y = -1;
+      locationMesh.rotation.y = Math.PI * 0.5;
+      console.log("DEBUG", "locationMesh - uuid", locationMesh.uuid);
+      this.scene.add(locationMesh);
+
       this.renderer = new WebGLRenderer({ antialias: true });
       this.renderer.setPixelRatio(window.devicePixelRatio);
       this.renderer.setSize(this.width, this.height);
@@ -86,6 +104,9 @@ export default {
       this.renderer.xr.setReferenceSpaceType("local");
       this.$refs.container.appendChild(this.renderer.domElement);
       this.$refs.container.appendChild(VRButton.createButton(this.renderer));
+
+      this.raycaster = new Raycaster();
+      this.mouse = new Vector2();
 
       // this.$refs.container.style.touchAction = "none";
       this.$refs.container.addEventListener("pointerdown", this.onPointerDown);
@@ -95,6 +116,8 @@ export default {
       // this.$refs.container.addEventListener("dragenter", )
       // this.$refs.container.addEventListener("dragleave", )
       // this.$refs.container.addEventListener("drop", )
+      this.$refs.container.addEventListener("mousemove", this.onMouseMove);
+      this.$refs.container.addEventListener("click", this.onClick);
       this.renderer.setAnimationLoop(this.render);
     },
     animate() {
@@ -103,10 +126,25 @@ export default {
       // this.renderer.setAnimationLoop(this.render);
     },
     render() {
+      this.raycaster.setFromCamera(this.mouse, this.camera);
+      this.intersects = this.raycaster.intersectObjects(this.scene.children);
+
+      for (let i = 0; i < this.scene.children.length; i++) {
+        this.scene.children[i].scale = new Vector3(1, 1, 1);
+        this.scene.children[i].material.opacity = 0.5;
+      }
+
+      for (let i = 0; i < this.intersects.length; i++) {
+        // console.log("DEBUG", `${i + 1} of ${this.intersects.length}`, this.intersects[i]);
+        // this.intersects[i].object.material.color.set(0xff0000);
+        this.intersects[i].object.scale = new Vector3(2, 2, 2);
+        this.intersects[i].object.material.opacity = 1;
+      }
+
       this.renderer.render(this.scene, this.camera);
     },
     updateScene() {
-      if (this.isUserIntefacing === false) this.lon += 0.1;
+      // if (this.isUserIntefacing === false) this.lon += 0.1;
       this.lat = Math.max(-85, Math.min(85, this.lat));
       const phi = MathUtils.degToRad(90 - this.lat);
       const theta = MathUtils.degToRad(this.lon);
@@ -167,6 +205,17 @@ export default {
       this.fov = Number(this.camera.fov + event.deltaY * 0.05).toFixed(0);
       this.camera.fov = MathUtils.clamp(this.fov, 10, 75);
       this.camera.updateProjectionMatrix();
+    },
+    onMouseMove(event) {
+      // normalized device coordinate (NDC)
+      this.mouse.x = (event.offsetX / this.width) * 2 - 1;
+      this.mouse.y = -(event.offsetY / this.height) * 2 + 1;
+    },
+    onClick(event) {
+      console.log("DEBUG", this.intersects.length, this.intersects);
+      for (let i = 0; i < this.intersects.length; i++) {
+        console.log("DEBUG", "uuid", this.intersects[i].object.uuid);
+      }
     },
     async onClickFullscreen(event) {
       if (this.mode === "default") {
