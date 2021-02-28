@@ -1,7 +1,5 @@
 <template>
   <div ref="root">
-    <span> {{ title }} (x: {{ x.toFixed(0) }}, y: {{ y.toFixed(0) }}, z: {{ z.toFixed(0) }}, fov: {{ fov }}) </span>
-    <img :src="source" alt="Picture" />
     <div ref="container" class="container"></div>
   </div>
 </template>
@@ -32,9 +30,6 @@ export default {
   },
   data() {
     return {
-      x: 0,
-      y: 0,
-      z: 0,
       fov: 75,
       camera: null,
       scene: null,
@@ -48,8 +43,6 @@ export default {
       },
       lon: 0,
       lat: 0,
-      phi: 0,
-      theta: 0,
     };
   },
   computed: {
@@ -64,11 +57,11 @@ export default {
       this.scene = new Scene();
 
       const geometry = new SphereGeometry(500, 60, 40);
-      // geometry.scale(-1, 1, 1);
+      geometry.scale(-1, 1, 1);
 
       const texture = new TextureLoader().load(this.source);
       const material = new MeshBasicMaterial({ map: texture });
-      const mesh = new Mesh(geometry, texture);
+      const mesh = new Mesh(geometry, material);
       this.scene.add(mesh);
 
       this.renderer = new WebGLRenderer();
@@ -92,14 +85,14 @@ export default {
     updateScene() {
       if (this.isUserIntefacing === false) this.lon += 0.1;
       this.lat = Math.max(-85, Math.min(85, this.lat));
-      this.phi = MathUtils.degToRad(90 - this.lat);
-      this.theta = MathUtils.degToRad(this.lon);
+      const phi = MathUtils.degToRad(90 - this.lat);
+      const theta = MathUtils.degToRad(this.lon);
 
-      this.x = 500 * Math.sin(this.phi) * Math.cos(this.theta);
-      this.y = 500 * Math.cos(this.phi);
-      this.z = 500 * Math.sin(this.phi) * Math.sin(this.theta);
+      const x = 500 * Math.sin(phi) * Math.cos(theta);
+      const y = 500 * Math.cos(phi);
+      const z = 500 * Math.sin(phi) * Math.sin(theta);
 
-      this.camera.lookAt(this.x, this.y, this.z);
+      this.camera.lookAt(x, y, z);
       this.renderer.render(this.scene, this.camera);
     },
     updateSize() {
@@ -154,16 +147,6 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-// .container
-//   cursor move // fallback
-//   cursor grab
-//   cursor -moz-grab
-//   cursor -webkit-grab
-//   &:active
-//     cursor grabbing
-//     cursor -moz-grabbing
-//     cursor -webkit grabbing
-
 .container
   cursor move
 </style>

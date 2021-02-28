@@ -38,8 +38,8 @@ Das Labor steht außerdem Partnern zur Verfügung, um sich über aktuelle Standa
 ## Virtueller Rundgang
  
 <VRTour>
-  <VRImage title="Example" src="/assets/img/vr/example.jpg"/>
-  <!-- <VRImage title="Gang" src="/assets/img/vr/floor.jpg"/> -->
+  <!-- <VRImage title="Example" src="/assets/img/vr/example.jpg"/> -->
+  <VRImage title="Gang" src="/assets/img/vr/floor.jpg"/>
   <!-- <VRImage title="Küche" src="/assets/img/vr/kitchen.jpg"/>
   <VRImage title="Wohnraum" src="/assets/img/vr/living-room.jpg"/>
   <VRImage title="Patientenbett" src="/assets/img/vr/patient-bed.jpg"/>
