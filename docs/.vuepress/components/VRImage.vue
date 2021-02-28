@@ -1,6 +1,9 @@
 <template>
-  <div ref="root">
+  <div ref="root" class="root">
     <div ref="container" class="container"></div>
+    <button @click="onClickFullscreen" class="fullscreen-toggle">
+      <font-awesome-icon icon="expand" />
+    </button>
   </div>
 </template>
 
@@ -30,6 +33,7 @@ export default {
   },
   data() {
     return {
+      mode: "default",
       fov: 75,
       camera: null,
       scene: null,
@@ -96,15 +100,23 @@ export default {
       this.renderer.render(this.scene, this.camera);
     },
     updateSize() {
-      const { width } = this.$refs.container.parentNode.getBoundingClientRect();
+      const { width } = this.$refs.root.getBoundingClientRect();
+      this.width = width;
+      this.height = (width * 9) / 16;
+    },
+    updateRendererSize() {
+      this.camera.aspect = this.width / this.height;
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(this.width, this.height);
+    },
+    resetSize() {
+      const { width } = this.$refs.root.parentNode.getBoundingClientRect();
       this.width = width;
       this.height = (width * 9) / 16;
     },
     onWindowResize() {
       this.updateSize();
-      this.camera.aspect = this.width / this.height;
-      this.camera.updateProjectionMatrix();
-      this.renderer.setSize(this.width, this.height);
+      this.updateRendererSize();
     },
     onPointerDown(event) {
       if (event.isPrimary === false) return;
@@ -137,16 +149,67 @@ export default {
       this.camera.fov = MathUtils.clamp(this.fov, 10, 75);
       this.camera.updateProjectionMatrix();
     },
+    async onClickFullscreen(event) {
+      if (this.mode === "default") {
+        await this.enterFullScreen();
+      } else {
+        this.resetFullScreen();
+      }
+    },
+    async enterFullScreen() {
+      if (this.mode === "fullscreen") return;
+      this.mode = "fullscreen";
+      this.width = window.screen.width;
+      this.height = window.screen.height;
+      this.updateRendererSize();
+      this.$refs.root.classList.add("fullscreen");
+      await this.$refs.root.requestFullscreen();
+    },
+    async resetFullScreen() {
+      if (this.mode === "default") return;
+      this.mode = "default";
+      this.resetSize();
+      this.camera.aspect = this.width / this.height;
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(this.width, this.height);
+      this.$refs.root.classList.remove("fullscreen");
+      if (window.document.fullscreenElement) window.document.exitFullscreen();
+    },
+    async onFullscreenChange(event) {
+      if (!window.document.fullscreenElement) {
+        await this.resetFullScreen();
+      }
+    },
   },
   mounted() {
     this.updateSize();
     this.init();
     this.animate();
+    window.document.addEventListener("fullscreenchange", this.onFullscreenChange);
   },
 };
 </script>
 
 <style lang="stylus" scoped>
-.container
-  cursor move
+.root
+  position relative
+  .container
+    cursor move
+  .fullscreen-toggle
+    cursor pointer
+    padding 0
+    border unset
+    background unset
+    color white
+    position absolute
+    right 1rem
+    top 1rem
+    &:focus
+      outline none
+
+  &.fullscreen
+    .fullscreen-toggle
+      font-size 2rem
+      right 2rem
+      top 2rem
 </style>
