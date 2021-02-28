@@ -140,8 +140,8 @@ export default {
       this.down.lon = this.lon;
       this.down.lat = this.lat;
 
-      this.$refs.container.addEventListener("pointermove", this.onPointerMove);
-      this.$refs.container.addEventListener("pointerup", this.onPointerUp);
+      window.document.addEventListener("pointermove", this.onPointerMove);
+      window.document.addEventListener("pointerup", this.onPointerUp);
     },
     onPointerMove(event) {
       if (event.isPrimary === false) return;
@@ -151,8 +151,8 @@ export default {
     onPointerUp(event) {
       if (event.isPrimary === false) return;
       this.isUserIntefacing = false;
-      this.$refs.container.removeEventListener("pointermove", this.onPointerMove);
-      this.$refs.container.removeEventListener("pointerup", this.onPointerUp);
+      window.document.removeEventListener("pointermove", this.onPointerMove);
+      window.document.removeEventListener("pointerup", this.onPointerUp);
     },
     onMouseWheel(event) {
       event.preventDefault();
