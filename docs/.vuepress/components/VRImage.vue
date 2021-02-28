@@ -9,23 +9,17 @@
 
 <script>
 import {
-  AmbientLight,
-  BackSide,
-  DirectionalLight,
-  DoubleSide,
+  EquirectangularReflectionMapping,
+  sRGBEncoding,
   MathUtils,
   Mesh,
   MeshBasicMaterial,
-  MeshLambertMaterial,
-  MeshPhongMaterial,
   PerspectiveCamera,
-  PointLight,
-  Raycaster,
   Scene,
   SphereGeometry,
   TextureLoader,
-  Vector2,
   WebGLRenderer,
+  LinearEncoding,
 } from "three";
 
 import { VRButton } from "three/examples/jsm/webxr/VRButton.js";
@@ -50,8 +44,6 @@ export default {
       camera: null,
       scene: null,
       renderer: null,
-      raycaster: null,
-      mouse: null,
       isUserIntefacing: null,
       down: {
         x: 0,
@@ -74,35 +66,18 @@ export default {
       this.camera = new PerspectiveCamera(this.fov, ratio, 1, 1100);
       this.scene = new Scene();
 
-      const geometry = new SphereGeometry(500, 60, 40);
-      geometry.scale(-1, 1, 1);
-
       const texture = new TextureLoader().load(this.source);
-      const material = new MeshBasicMaterial({ map: texture });
-      // material.side = Backside;
-      const mesh = new Mesh(geometry, material);
-      // mesh.rotation.y = Math.PI / 2;
-      this.scene.add(mesh);
+      texture.mapping = EquirectangularReflectionMapping;
+      // texture.encoding = sRGBEncoding;
+      texture.encoding = LinearEncoding;
+      this.scene.background = texture;
 
-      // const light = new DirectionalLight(0xffffff, 1.5);
-      // const light = new AmbientLight(0xffffff);
-      const lightFront = new PointLight(0xffffff, 1, 100);
-      lightFront.position.set(1, 0, 0);
-      const lightBack = new PointLight(0xffffff, 1, 100);
-      lightBack.position.set(-1, 0, 0);
+      // const geometry = new SphereGeometry(500, 60, 40);
+      // geometry.scale(-1, 1, 1);
 
-      this.scene.add(lightFront);
-      this.scene.add(lightBack);
-
-      const infoGeometry = new SphereGeometry(0.25, 60, 40, 0, Math.PI, 0, Math.PI);
-      // infoGeometry.scale(-1, 1, 1);
-      // const infoMaterial = new MeshPhongMaterial({ color: 0xffffff });
-      const infoMaterial = new MeshLambertMaterial({ color: 0x00649c, side: DoubleSide });
-      // infoMaterial.side = BackSide;
-      const infoMesh = new Mesh(infoGeometry, infoMaterial);
-      infoMesh.position.z = 2;
-      // infoMesh.rotation.x = Math.PI;
-      this.scene.add(infoMesh);
+      // const material = new MeshBasicMaterial({ map: texture });
+      // const mesh = new Mesh(geometry, material);
+      // this.scene.add(mesh);
 
       this.renderer = new WebGLRenderer({ antialias: true });
       this.renderer.setPixelRatio(window.devicePixelRatio);
@@ -112,9 +87,6 @@ export default {
       this.$refs.container.appendChild(this.renderer.domElement);
       this.$refs.container.appendChild(VRButton.createButton(this.renderer));
 
-      this.raycaster = new Raycaster();
-      this.mouse = new Vector2();
-
       // this.$refs.container.style.touchAction = "none";
       this.$refs.container.addEventListener("pointerdown", this.onPointerDown);
       this.$refs.container.addEventListener("wheel", this.onMouseWheel);
@@ -123,7 +95,6 @@ export default {
       // this.$refs.container.addEventListener("dragenter", )
       // this.$refs.container.addEventListener("dragleave", )
       // this.$refs.container.addEventListener("drop", )
-      this.$refs.container.addEventListener("mousemove", this.onMouseMove);
       this.renderer.setAnimationLoop(this.render);
     },
     animate() {
@@ -132,14 +103,6 @@ export default {
       // this.renderer.setAnimationLoop(this.render);
     },
     render() {
-      this.raycaster.setFromCamera(this.mouse, this.camera);
-      const intersects = this.raycaster.intersectObjects(this.scene.children);
-
-      for (let i = 0; i < intersects.length; i++) {
-        console.log("DEBUG", `${i + 1} of ${intersects.length}`, intersects[i]);
-        intersects[i].object.material.color.set(0xff0000);
-      }
-
       this.renderer.render(this.scene, this.camera);
     },
     updateScene() {
@@ -204,10 +167,6 @@ export default {
       this.fov = Number(this.camera.fov + event.deltaY * 0.05).toFixed(0);
       this.camera.fov = MathUtils.clamp(this.fov, 10, 75);
       this.camera.updateProjectionMatrix();
-    },
-    onMouseMove(event) {
-      this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-      this.mouse.y = (event.clientY / window.innerHeight) * 2 - 1;
     },
     async onClickFullscreen(event) {
       if (this.mode === "default") {
