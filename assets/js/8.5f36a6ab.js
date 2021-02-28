@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[8],{370:function(e,t,n){"use strict";n.r(t);var a={name:"VRTour"},i=n(41),l=Object(i.a)(a,(function(){var e=this.$createElement,t=this._self._c||e;return t("ClientOnly",[t("div",[this._t("default")],2)])}),[],!1,null,"0e30afbd",null);t.default=l.exports}}]);
