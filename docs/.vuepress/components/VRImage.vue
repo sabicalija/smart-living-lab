@@ -87,7 +87,7 @@ export default {
       // this.scene.add(mesh);
 
       const locationGeometry = new SphereGeometry(1, 60, 40);
-      const locationTexture = new TextureLoader().load("/assets/img/vr/kitchen.jpg");
+      const locationTexture = new TextureLoader().load(this.$withBase("/assets/img/vr/kitchen.jpg"));
       const locationMaterial = new MeshBasicMaterial({ map: locationTexture, transparent: true, opacity: 0.5 });
       const locationMesh = new Mesh(locationGeometry, locationMaterial);
       locationMesh.position.z = 2;

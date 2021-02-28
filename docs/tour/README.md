@@ -10,7 +10,9 @@ Außerdem wurden mehr als 15 Gender Mainstreaming & Diversity Management Aktivit
 Im Mai 2019 wurde das neue Smart Living Lab der FH Technikum Wien fertig gestellt.
 Auf über 250 m^2^ Nutzfläche bestehend aus Wohnbereich, Nass- und Schlafraum, Küche und Seminarbereichen, ausgestattet mit moderner Smart Home und assistierender Technologie, steht uns nun ein ideales Labor für die zukünftige Lehre sowie spannende Forschungsprojekte zur Verfügung.
 
-![Smart Living Lab](/assets/img/smart-living-lab.de.png "Smart Living Lab")
+<!-- ![Smart Living Lab](/assets/img/smart-living-lab.de.png "Smart Living Lab") -->
+
+<img :src="$withBase('/assets/img/smart-living-lab.de.png')" title="Smart Living Lab" alt="Smart Living Lab">
 
 ## Beschreibung
 
