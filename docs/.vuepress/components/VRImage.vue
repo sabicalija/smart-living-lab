@@ -2,7 +2,7 @@
   <div ref="root" class="root">
     <div ref="container" class="container"></div>
     <button @click="onClickFullscreen" class="fullscreen-toggle">
-      <font-awesome-icon icon="expand" />
+      <font-awesome-icon :icon="fullscreenIcon" />
     </button>
   </div>
 </template>
@@ -36,6 +36,7 @@ export default {
   data() {
     return {
       mode: "default",
+      fullscreenIcon: ["fas", "expand"],
       fov: 75,
       camera: null,
       scene: null,
@@ -169,6 +170,7 @@ export default {
     async enterFullScreen() {
       if (this.mode === "fullscreen") return;
       this.mode = "fullscreen";
+      this.fullscreenIcon = ["fas", "compress"];
       this.width = window.screen.width;
       this.height = window.screen.height;
       this.updateRendererSize();
@@ -178,6 +180,7 @@ export default {
     async resetFullScreen() {
       if (this.mode === "default") return;
       this.mode = "default";
+      this.fullscreenIcon = ["fas", "expand"];
       this.resetSize();
       this.camera.aspect = this.width / this.height;
       this.camera.updateProjectionMatrix();
