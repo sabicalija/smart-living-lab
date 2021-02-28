@@ -19,6 +19,8 @@ import {
   WebGLRenderer,
 } from "three";
 
+import { VRButton } from "three/examples/jsm/webxr/VRButton.js";
+
 export default {
   name: "VRImage",
   props: {
@@ -68,10 +70,13 @@ export default {
       const mesh = new Mesh(geometry, material);
       this.scene.add(mesh);
 
-      this.renderer = new WebGLRenderer();
+      this.renderer = new WebGLRenderer({ antialias: true });
       this.renderer.setPixelRatio(window.devicePixelRatio);
       this.renderer.setSize(this.width, this.height);
+      this.renderer.xr.enabled = true;
+      this.renderer.xr.setReferenceSpaceType("local");
       this.$refs.container.appendChild(this.renderer.domElement);
+      this.$refs.container.appendChild(VRButton.createButton(this.renderer));
 
       // this.$refs.container.style.touchAction = "none";
       this.$refs.container.addEventListener("pointerdown", this.onPointerDown);
@@ -81,10 +86,15 @@ export default {
       // this.$refs.container.addEventListener("dragenter", )
       // this.$refs.container.addEventListener("dragleave", )
       // this.$refs.container.addEventListener("drop", )
+      this.renderer.setAnimationLoop(this.render);
     },
     animate() {
       window.requestAnimationFrame(this.animate);
       this.updateScene();
+      // this.renderer.setAnimationLoop(this.render);
+    },
+    render() {
+      this.renderer.render(this.scene, this.camera);
     },
     updateScene() {
       if (this.isUserIntefacing === false) this.lon += 0.1;
@@ -187,6 +197,9 @@ export default {
     this.animate();
     window.document.addEventListener("fullscreenchange", this.onFullscreenChange);
   },
+  beforeDestroy() {
+    window.document.removeEventListener("fullscreenchange", this.onFullscreenChange);
+  },
 };
 </script>
 
@@ -195,6 +208,8 @@ export default {
   position relative
   .container
     cursor move
+    #VRButton
+      position relative !important
   .fullscreen-toggle
     cursor pointer
     padding 0
