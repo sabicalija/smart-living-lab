@@ -1,6 +1,7 @@
 # Ignore
 node_modules/
 build/
+dist/
 gh-pages/
 
 # Allow
