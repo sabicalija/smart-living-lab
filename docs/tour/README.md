@@ -10,9 +10,9 @@ Außerdem wurden mehr als 15 Gender Mainstreaming & Diversity Management Aktivit
 Im Mai 2019 wurde das neue Smart Living Lab der FH Technikum Wien fertig gestellt.
 Auf über 250 m^2^ Nutzfläche bestehend aus Wohnbereich, Nass- und Schlafraum, Küche und Seminarbereichen, ausgestattet mit moderner Smart Home und assistierender Technologie, steht uns nun ein ideales Labor für die zukünftige Lehre sowie spannende Forschungsprojekte zur Verfügung.
 
-<!-- ![Smart Living Lab](/assets/img/smart-living-lab.de.png "Smart Living Lab") -->
+![Smart Living Lab](/assets/img/smart-living-lab.de.png "Smart Living Lab")
 
-<img :src="$withBase('/assets/img/smart-living-lab.de.png')" title="Smart Living Lab" alt="Smart Living Lab">
+<!-- <img :src="$withBase('/assets/img/smart-living-lab.de.png')" title="Smart Living Lab" alt="Smart Living Lab"> -->
 
 ## Beschreibung
 
@@ -38,15 +38,17 @@ Außerdem können neue offene Standards und Technologien in das Wohnumfeld integ
 Das Labor steht außerdem Partnern zur Verfügung, um sich über aktuelle Standards und Technologien sowie deren Integration in ein Gesamtsystem informieren zu können.
 
 ## Virtueller Rundgang
- 
-<VRTour>
+
+<ClientOnly>
   <!-- <VRImage title="Example" src="/assets/img/vr/example.jpg"/> -->
   <VRImage title="Gang" src="/assets/img/vr/floor.jpg"/>
   <!-- <VRImage title="Küche" src="/assets/img/vr/kitchen.jpg"/>
   <VRImage title="Wohnraum" src="/assets/img/vr/living-room.jpg"/>
   <VRImage title="Patientenbett" src="/assets/img/vr/patient-bed.jpg"/>
   <VRImage title="Smart Garden" src="/assets/img/vr/smart-garden.jpg"/> -->
-</VRTour>
+</ClientOnly>
+
+<VRTour scene="/assets/vr/scenes/smart-living-lab.json"/>
 
 ## Standards
 

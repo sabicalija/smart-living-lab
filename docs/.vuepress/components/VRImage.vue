@@ -70,7 +70,7 @@ export default {
     init() {
       const ratio = this.width / this.height;
       this.camera = new PerspectiveCamera(this.fov, ratio, 1, 1100);
-      this.lon = 15;
+      // this.lon = 15;
       this.scene = new Scene();
 
       const texture = new TextureLoader().load(this.source);
@@ -90,9 +90,9 @@ export default {
       const locationTexture = new TextureLoader().load(this.$withBase("/assets/img/vr/kitchen.jpg"));
       const locationMaterial = new MeshBasicMaterial({ map: locationTexture, transparent: true, opacity: 0.5 });
       const locationMesh = new Mesh(locationGeometry, locationMaterial);
-      locationMesh.position.z = 2;
-      locationMesh.position.x = 20;
-      locationMesh.position.y = -1;
+      locationMesh.position.z = -5;
+      locationMesh.position.x = 0;
+      locationMesh.position.y = 0;
       locationMesh.rotation.y = Math.PI * 0.5;
       console.log("DEBUG", "locationMesh - uuid", locationMesh.uuid);
       this.scene.add(locationMesh);

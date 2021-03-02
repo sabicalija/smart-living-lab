@@ -1,0 +1,132 @@
+[
+  {
+    "name": "Floor",
+    "texture": "/assets/img/vr/floor.jpg",
+    "locations": [
+      {
+        "name": "Kitchen",
+        "position": { "x": 0, "y": 0, "z": -5 },
+        "rotation": { "x": 0, "y": 0, "z": 0 }
+      },
+      {
+        "name": "Living Room",
+        "position": { "x": 0, "y": 0, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0 }
+      },
+      {
+        "name": "Patient Bed",
+        "position": { "x": 0, "y": 0, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0 }
+      },
+      {
+        "name": "Smart Garden",
+        "position": { "x": 0, "y": 0, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0 }
+      }
+    ]
+  },
+  {
+    "name": "Kitchen",
+    "texture": "/assets/img/vr/kitchen.jpg",
+    "locations": [
+      {
+        "name": "Floor",
+        "position": { "x": 0, "y": 0, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0 }
+      },
+      {
+        "name": "Living Room",
+        "position": { "x": 0, "y": 0, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0 }
+      },
+      {
+        "name": "Patient Bed",
+        "position": { "x": 0, "y": 0, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0 }
+      },
+      {
+        "name": "Smart Garden",
+        "position": { "x": 0, "y": 0, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0 }
+      }
+    ]
+  },
+  {
+    "name": "Living Room",
+    "texture": "/assets/img/vr/living-room.jpg",
+    "locations": [
+      {
+        "name": "Kitchen",
+        "position": { "x": 0, "y": 0, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0 }
+      },
+      {
+        "name": "Floor",
+        "position": { "x": 0, "y": 0, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0 }
+      },
+      {
+        "name": "Patient Bed",
+        "position": { "x": 0, "y": 0, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0 }
+      },
+      {
+        "name": "Smart Garden",
+        "position": { "x": 0, "y": 0, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0 }
+      }
+    ]
+  },
+  {
+    "name": "Patient Bed",
+    "texture": "/assets/img/vr/patient-bed.jpg",
+    "locations": [
+      {
+        "name": "Kitchen",
+        "position": { "x": 0, "y": 0, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0 }
+      },
+      {
+        "name": "Living Room",
+        "position": { "x": 0, "y": 0, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0 }
+      },
+      {
+        "name": "Floor",
+        "position": { "x": 0, "y": 0, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0 }
+      },
+      {
+        "name": "Smart Garden",
+        "position": { "x": 0, "y": 0, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0 }
+      }
+    ]
+  },
+  {
+    "name": "Smart Garden",
+    "texture": "/assets/img/vr/smart-garden.jpg",
+    "locations": [
+      {
+        "name": "Kitchen",
+        "position": { "x": 0, "y": 0, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0 }
+      },
+      {
+        "name": "Living Room",
+        "position": { "x": 0, "y": 0, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0 }
+      },
+      {
+        "name": "Patient Bed",
+        "position": { "x": 0, "y": 0, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0 }
+      },
+      {
+        "name": "Floor",
+        "position": { "x": 0, "y": 0, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0 }
+      }
+    ]
+  }
+]
