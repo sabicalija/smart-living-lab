@@ -4,7 +4,7 @@ BASE_PATH="/smart-living-lab/"
 
 if [[ -z "$1" ]] ; then
     rm -rf build/
-    BASE=$BASEPATH yarn build
+    BASE=$BASE_PATH yarn build
     if [[ -d "gh-pages/next" ]] ; then
         mv gh-pages/next next-backup
     fi
@@ -20,7 +20,7 @@ if [[ -z "$1" ]] ; then
 else
     if [[ "$1" == "next" ]] ; then
         rm -rf build/ 
-        BASE=$BASEPATH"next/" yarn build 
+        BASE=$BASE_PATH"next/" yarn build 
         rm -rf gh-pages/next
         cp -r build gh-pages/next
         cd gh-pages/next
